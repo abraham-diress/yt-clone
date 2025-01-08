@@ -1,1 +1,58 @@
 node_modules
+# Node.js dependencies
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Logs
+logs/
+*.log
+logs/**/*.log
+
+# Docker-related files
+.dockerignore
+.docker/
+*.pid
+
+# Compiled output
+dist/
+build/
+out/
+*.out
+*.o
+
+# Typescript
+*.tsbuildinfo
+tsconfig.tsbuildinfo
+
+# IDE and Editor settings
+.vscode/
+.idea/
+*.swp
+*.swo
+*.DS_Store
+
+# Temporary files
+tmp/
+temp/
+*.tmp
+*.temp
+
+# Media files
+*.mp4
+*.avi
+*.mkv
+*.mov
+
+# OS Generated files
+Thumbs.db
+.DS_Store
+
+# Coverage
+coverage/
+
+# Misc
+*.bak
+*.old
+*.orig
