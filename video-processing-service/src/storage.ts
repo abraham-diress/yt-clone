@@ -3,6 +3,8 @@ import fs from 'fs';
 import ffmpeg from 'fluent-ffmpeg';
 import { resolve } from 'path';
 import { rejects } from 'assert';
+import exp from 'constants';
+import { dir } from 'console';
 
 
 const storage = new Storage();
@@ -16,8 +18,9 @@ const localProcessedVideoPath = "./processed-videos";
 
 
 export function setupDirectories() {
-
-} 
+  ensureDirectoryExistence(localRawVideoPath)
+  ensureDirectoryExistence(localProcessedVideoPath)
+}
 
 export function convertVideo(rawVideoName: string, processedVideoName: string){
   return new Promise<void>((resolve, reject) => {
@@ -57,6 +60,41 @@ export async function uploadProcessedVideo(filename: string){
     console.log(
       "Uploaded successfully!"
     )
-
     await bucket.file(filename).makePublic();
+}
+
+export function deleteRawVideo(fileName: string){
+      deleteFile(`${localRawVideoPath}/${fileName}`)
+}
+
+export function deleteProcessedVideo(fileName: string){
+  deleteFile(`${localProcessedVideoPath}/${fileName}`)
+}
+
+function deleteFile(filePath: string): Promise<void> {
+  return new Promise((resolve, reject) => {
+    if (fs.existsSync(filePath)){
+        fs.unlink(filePath, (err) => {
+          if (err) {
+            console.log("Failed to delete file")
+            reject(err)
+          }
+          else {
+            console.log("File deleted successfully")
+            resolve();
+          }
+        })
+    }
+    else {
+      console.log("File not found, skipping the delete")
+      resolve()
+    }
+  })
+}
+
+function ensureDirectoryExistence(dirPath: string){
+  if (!fs.existsSync(dirPath)){
+    fs.mkdirSync(dirPath, { recursive: true });
+    console.log(`Directory created at ${dirPath}`);
+  }
 }
