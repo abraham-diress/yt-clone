@@ -1,7 +1,12 @@
-import { error } from "console";
 import express from "express";
-import ffmpeg from "fluent-ffmpeg";
-import { convertVideo, deleteProcessedVideo, deleteRawVideo, downloadRawVideo, setupDirectories, uploadProcessedVideo } from "./storage"; 
+import {
+  convertVideo,
+  deleteProcessedVideo,
+  deleteRawVideo,
+  downloadRawVideo,
+  setupDirectories,
+  uploadProcessedVideo,
+} from "./storage";
 
 setupDirectories();
 
@@ -32,23 +37,23 @@ app.post("/process-video", async (req, res) => {
 
   // Convert the video to 360p
   try {
-    convertVideo
-   } catch(err) {
-      Promise.all([
+    await convertVideo(inputFileName, outputFileName);
+  } catch (err) {
+    await Promise.all([
       deleteRawVideo(inputFileName),
-      deleteProcessedVideo(outputFileName)
-      ])
-      console.log(err)
-      res.status(500).send('Internal Server Error: video processing failed.');
-      return;
-   }
+      deleteProcessedVideo(outputFileName),
+    ]);
+    console.log(err);
+    res.status(500).send("Internal Server Error: video processing failed.");
+    return;
+  }
   // Upload the processed video to Cloud Storage
   await uploadProcessedVideo(outputFileName)
 
-  Promise.all([
+  await Promise.all([
     deleteRawVideo(inputFileName),
-    deleteProcessedVideo(outputFileName)
-    ]);
+    deleteProcessedVideo(outputFileName),
+  ]);
 
     res.status(200).send('Processing finished successfully');
 
